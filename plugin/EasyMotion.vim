@@ -15,7 +15,7 @@
 		for [key, value] in items(a:options)
 			if ! exists('g:EasyMotion_' . key)
 				exec 'let g:EasyMotion_' . key . ' = ' . string(value)
-			endif
+		endif
 		endfor
 	endfunction " }}}
 	function! s:InitHL(group, colors) " {{{
@@ -72,13 +72,13 @@
 		let s:target_hl_defaults = {
 		\   'gui'     : ['NONE', '#ff0000' , 'bold']
 		\ , 'cterm256': ['NONE', '196'     , 'bold']
-		\ , 'cterm'   : ['NONE', 'red'     , 'bold']
+		\ , 'cterm'   : ['darkred', 'yellow'     , 'bold']
 		\ }
 
 		let s:shade_hl_defaults = {
 		\   'gui'     : ['NONE', '#585858' , 'NONE']
 		\ , 'cterm256': ['NONE', '240'     , 'NONE']
-		\ , 'cterm'   : ['NONE', 'darkgrey', 'NONE']
+		\ , 'cterm'   : ['NONE', 'darkmagenta', 'NONE']
 		\ }
 
 		call s:InitHL(s:hl_group_target, s:target_hl_defaults)
@@ -93,24 +93,39 @@
 			augroup end
 		" }}}
 	" }}}
-	" Default key mapping {{{
-		call s:InitMappings({
-		\   'f' : { 'name': 'F'  , 'dir': 0 }
-		\ , 'F' : { 'name': 'F'  , 'dir': 1 }
-		\ , 't' : { 'name': 'T'  , 'dir': 0 }
-		\ , 'T' : { 'name': 'T'  , 'dir': 1 }
-		\ , 'w' : { 'name': 'WB' , 'dir': 0 }
-		\ , 'W' : { 'name': 'WBW', 'dir': 0 }
-		\ , 'b' : { 'name': 'WB' , 'dir': 1 }
-		\ , 'B' : { 'name': 'WBW', 'dir': 1 }
-		\ , 'e' : { 'name': 'E'  , 'dir': 0 }
-		\ , 'E' : { 'name': 'EW' , 'dir': 0 }
-		\ , 'ge': { 'name': 'E'  , 'dir': 1 }
-		\ , 'gE': { 'name': 'EW' , 'dir': 1 }
-		\ , 'j' : { 'name': 'JK' , 'dir': 0 }
-		\ , 'k' : { 'name': 'JK' , 'dir': 1 }
-		\ })
-	" }}}
+" Default key mapping {{{
+	if g:EasyMotion_do_mapping
+		nnoremap <silent> ff       :call EasyMotionF(0, 0)<CR>
+		vnoremap <silent> ff  :<C-U>call EasyMotionF(1, 0)<CR>
+
+		nnoremap <silent> fF       :call EasyMotionF(0, 1)<CR>
+		vnoremap <silent> fF  :<C-U>call EasyMotionF(1, 1)<CR>
+
+		nnoremap <silent> ft       :call EasyMotionT(0, 0)<CR>
+		vnoremap <silent> ft  :<C-U>call EasyMotionT(1, 0)<CR>
+
+		nnoremap <silent> fT       :call EasyMotionT(0, 1)<CR>
+		vnoremap <silent> fT  :<C-U>call EasyMotionT(1, 1)<CR>
+
+		nnoremap <silent> fw       :call EasyMotionWB(0, 0)<CR>
+		vnoremap <silent> fw  :<C-U>call EasyMotionWB(1, 0)<CR>
+
+		nnoremap <silent> fb       :call EasyMotionWB(0, 1)<CR>
+		vnoremap <silent> fb  :<C-U>call EasyMotionWB(1, 1)<CR>
+
+		nnoremap <silent> fe       :call EasyMotionE(0, 0)<CR>
+		vnoremap <silent> fe  :<C-U>call EasyMotionE(1, 0)<CR>
+
+		nnoremap <silent> fge      :call EasyMotionE(0, 1)<CR>
+		vnoremap <silent> fge :<C-U>call EasyMotionE(1, 1)<CR>
+
+		nnoremap <silent> fn       :call EasyMotionJK(0, 0)<CR>
+		vnoremap <silent> fn  :<C-U>call EasyMotionJK(1, 0)<CR>
+
+		nnoremap <silent> fe       :call EasyMotionJK(0, 1)<CR>
+		vnoremap <silent> fe  :<C-U>call EasyMotionJK(1, 1)<CR>
+	endif
+" }}}
 " }}}
 " Motion functions {{{
 	function! EasyMotionF(visualmode, direction) " {{{
@@ -399,12 +414,12 @@
 			for [coords, target_key] in items(s:CreateCoordKeyDict(a:groups))
 				let [line_num, col_num] = split(coords, ',')
 
-				" Add original line and marker line
-				if ! has_key(lines, line_num)
-					let current_line = getline(line_num)
+					" Add original line and marker line
+					if ! has_key(lines, line_num)
+						let current_line = getline(line_num)
 
-					let lines[line_num] = { 'orig': current_line, 'marker': current_line }
-				endif
+						let lines[line_num] = { 'orig': current_line, 'marker': current_line }
+					endif
 
 				if strlen(lines[line_num]['marker']) > 0
 					" Replace hard tab with spaces
@@ -412,16 +427,16 @@
 						let target_key .= repeat(' ', string(&tabstop) - strlen(target_key))
 					endif
 
-					" Substitute marker character if line length > 0
+						" Substitute marker character if line length > 0
 					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', target_key, '')
-				else
-					" Set the line to the marker character if the line is empty
+					else
+						" Set the line to the marker character if the line is empty
 					let lines[line_num]['marker'] = target_key
-				endif
+					endif
 
-				" Add highlighting coordinates
-				call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
-			endfor
+					" Add highlighting coordinates
+					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
+				endfor
 
 			let lines_items = items(lines)
 		" }}}
@@ -438,30 +453,30 @@
 			" Get target character {{{
 				call s:Prompt('Target key')
 
-				let char = s:GetChar()
+			let char = s:GetChar()
 			" }}}
 		finally
 			" Restore original lines
 			call s:SetLines(lines_items, 'orig')
 
 			" Un-highlight targets {{{
-				if exists('target_hl_id')
-					call matchdelete(target_hl_id)
-				endif
+			if exists('target_hl_id')
+				call matchdelete(target_hl_id)
+			endif
 			" }}}
 
 			redraw
 		endtry
 
 		" Check if we have an input char {{{
-			if empty(char)
-				throw 'Cancelled'
-			endif
+		if empty(char)
+			throw 'Cancelled'
+		endif
 		" }}}
 		" Check if the input char is valid {{{
 			if ! has_key(a:groups, char)
-				throw 'Invalid target'
-			endif
+			throw 'Invalid target'
+		endif
 		" }}}
 
 		let target = a:groups[char]
@@ -480,65 +495,65 @@
 
 		try
 			" Reset properties {{{
-				call s:VarReset('&scrolloff', 0)
-				call s:VarReset('&modified', 0)
-				call s:VarReset('&modifiable', 1)
-				call s:VarReset('&readonly', 0)
+			call s:VarReset('&scrolloff', 0)
+			call s:VarReset('&modified', 0)
+			call s:VarReset('&modifiable', 1)
+			call s:VarReset('&readonly', 0)
 			" }}}
 			" Find motion targets {{{
-				let search_direction = (a:direction == 1 ? 'b' : '')
-				let search_stopline = line(a:direction == 1 ? 'w0' : 'w$')
+			let search_direction = (a:direction == 1 ? 'b' : '')
+			let search_stopline = line(a:direction == 1 ? 'w0' : 'w$')
 
-				while 1
-					let pos = searchpos(a:regexp, search_direction, search_stopline)
+			while 1
+				let pos = searchpos(a:regexp, search_direction, search_stopline)
 
-					" Reached end of search range
-					if pos == [0, 0]
-						break
-					endif
-
-					" Skip folded lines
-					if foldclosed(pos[0]) != -1
-						continue
-					endif
-
-					call add(targets, pos)
-				endwhile
-
-				let targets_len = len(targets)
-				if targets_len == 0
-					throw 'No matches'
+				" Reached end of search range
+				if pos == [0, 0]
+					break
 				endif
+
+				" Skip folded lines
+				if foldclosed(pos[0]) != -1
+					continue
+				endif
+
+				call add(targets, pos)
+			endwhile
+
+			let targets_len = len(targets)
+			if targets_len == 0
+				throw 'No matches'
+			endif
 			" }}}
 
 			let GroupingFn = function('s:GroupingAlgorithm' . s:grouping_algorithms[g:EasyMotion_grouping])
 			let groups = GroupingFn(targets, split(g:EasyMotion_keys, '\zs'))
 
 			" Shade inactive source {{{
-				if g:EasyMotion_do_shade
-					let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
+			if g:EasyMotion_do_shade
+				let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
 
-					if a:direction == 1
-						" Backward
-						let shade_hl_re = '\%'. line('w0') .'l\_.*' . shade_hl_pos
-					else
-						" Forward
-						let shade_hl_re = shade_hl_pos . '\_.*\%'. line('w$') .'l'
-					endif
+				if a:direction == 1
+					" Backward
+					let shade_hl_re = '\%'. line('w0') .'l\_.*' . shade_hl_pos
+				else
+					" Forward
+					let shade_hl_re = shade_hl_pos . '\_.*\%'. line('w$') .'l'
+				endif
 
 					let shade_hl_id = matchadd(s:hl_group_shade, shade_hl_re, 0)
-				endif
+			endif
 			" }}}
 
 			" Prompt user for target group/character
 			let coords = s:PromptUser(groups)
 
 			" Update selection {{{
-				if ! empty(a:visualmode)
-					call cursor(orig_pos[0], orig_pos[1])
+			if ! empty(a:visualmode)
+				call cursor(orig_pos[0], orig_pos[1])
 
-					exec 'normal! ' . a:visualmode
-				endif
+				exec 'normal! ' . a:visualmode
+			endif
 			" }}}
 			" Handle operator-pending mode {{{
 				if a:mode == 'no'
@@ -562,23 +577,23 @@
 			call s:Message(v:exception)
 
 			" Restore original cursor position/selection {{{
-				if ! empty(a:visualmode)
-					silent exec 'normal! gv'
-				else
-					call cursor(orig_pos[0], orig_pos[1])
-				endif
+			if ! empty(a:visualmode)
+				silent exec 'normal! gv'
+			else
+				call cursor(orig_pos[0], orig_pos[1])
+			endif
 			" }}}
 		finally
 			" Restore properties {{{
-				call s:VarReset('&scrolloff')
-				call s:VarReset('&modified')
-				call s:VarReset('&modifiable')
-				call s:VarReset('&readonly')
+			call s:VarReset('&scrolloff')
+			call s:VarReset('&modified')
+			call s:VarReset('&modifiable')
+			call s:VarReset('&readonly')
 			" }}}
 			" Remove shading {{{
-				if g:EasyMotion_do_shade && exists('shade_hl_id')
-					call matchdelete(shade_hl_id)
-				endif
+			if g:EasyMotion_do_shade && exists('shade_hl_id')
+				call matchdelete(shade_hl_id)
+			endif
 			" }}}
 		endtry
 	endfunction " }}}
