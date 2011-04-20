@@ -59,7 +59,7 @@
 	" Default options {{{
 		call s:InitOptions({
 		\   'leader_key' : '<Leader>'
-		\ , 'keys'       : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+		\ , 'keys'       : 'tnseriaowydhuTNSERIAOWYDHU'
 		\ , 'do_shade'   : 1
 		\ , 'do_mapping' : 1
 		\ , 'grouping'   : 1
@@ -122,8 +122,8 @@
 		nnoremap <silent> fn       :call EasyMotionJK(0, 0)<CR>
 		vnoremap <silent> fn  :<C-U>call EasyMotionJK(1, 0)<CR>
 
-		nnoremap <silent> fe       :call EasyMotionJK(0, 1)<CR>
-		vnoremap <silent> fe  :<C-U>call EasyMotionJK(1, 1)<CR>
+		nnoremap <silent> fk :call EasyMotionSearch(0, 0)<CR>
+		nnoremap <silent> fK :call EasyMotionSearch(0, 1)<CR>
 	endif
 " }}}
 " }}}
@@ -139,6 +139,7 @@
 
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
+
 	function! EasyMotionT(visualmode, direction) " {{{
 		let char = s:GetSearchChar(a:visualmode)
 
@@ -154,6 +155,7 @@
 
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
+
 	function! EasyMotionWB(visualmode, direction) " {{{
 		call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
@@ -167,7 +169,11 @@
 		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotionJK(visualmode, direction) " {{{
-		call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '', '')
+		"call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '', '')
+  call s:EasyMotion('^\s*\zs', a:direction, a:visualmode ? visualmode() : '', '')
+	endfunction " }}}
+	function! EasyMotionSearch(visualmode, direction) " {{{
+		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 " }}}
 " Helper functions {{{
