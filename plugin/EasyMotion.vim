@@ -59,7 +59,7 @@
 	" Default options {{{
 		call s:InitOptions({
 		\   'leader_key' : '<Leader>'
-		\ , 'keys'       : 'tnseriaowydhuTNSERIAOWYDHU'
+		\ , 'keys'       : 'tnsedhriaofuwyplTNSEDHRIAOFUWYPL'
 		\ , 'do_shade'   : 1
 		\ , 'do_mapping' : 1
 		\ , 'grouping'   : 1
@@ -103,17 +103,21 @@
 		\ , 'W' : { 'name': 'WBW', 'dir': 0 }
 		\ , 'b' : { 'name': 'WB' , 'dir': 1 }
 		\ , 'B' : { 'name': 'WBW', 'dir': 1 }
-		\ , 'e' : { 'name': 'E'  , 'dir': 0 }
-		\ , 'E' : { 'name': 'EW' , 'dir': 0 }
+		\ , 'u' : { 'name': 'E'  , 'dir': 0 }
+		\ , 'U' : { 'name': 'EW' , 'dir': 0 }
 		\ , 'ge': { 'name': 'E'  , 'dir': 1 }
 		\ , 'gE': { 'name': 'EW' , 'dir': 1 }
-		\ , 'j' : { 'name': 'JK' , 'dir': 0 }
-		\ , 'k' : { 'name': 'JK' , 'dir': 1 }
-		\ , 'n' : { 'name': 'Search' , 'dir': 0 }
-		\ , 'N' : { 'name': 'Search' , 'dir': 1 }
+		\ , 'n' : { 'name': 'JK' , 'dir': 0 }
+		\ , 'e' : { 'name': 'JK' , 'dir': 1 }
+		\ , 'k' : { 'name': 'Search' , 'dir': 0 }
+		\ , 'K' : { 'name': 'Search' , 'dir': 1 }
 		\ })
 	" }}}
 " }}}
+"
+nnoremap <leader>* *1G:call EasyMotionSearch(0,0)<cr>
+nnoremap <leader># #'':call EasyMotionSearch(0,1)<cr>
+
 " Motion functions {{{
 	function! EasyMotionF(visualmode, direction) " {{{
 		let char = s:GetSearchChar(a:visualmode)
