@@ -161,7 +161,7 @@ nnoremap <leader># #'':call EasyMotionSearch(0,1)<cr>
 	endfunction " }}}
 	function! EasyMotionJK(visualmode, direction) " {{{
 		"call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '', '')
-  call s:EasyMotion('^\s*\zs', a:direction, a:visualmode ? visualmode() : '', '')
+  call s:EasyMotion('^\(\w\|\s*\zs\s\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 	function! EasyMotionSearch(visualmode, direction) " {{{
 		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')
